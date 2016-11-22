@@ -40,7 +40,8 @@ gem "paperclip", "~> 5.0.0"
 gem 'simple_form'
 # Geo Location
 gem 'geocoder'
-
+#Fake data generator
+gem 'faker'
 
 
 group :development, :test do
