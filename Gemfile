@@ -38,6 +38,8 @@ gem 'devise'
 gem "paperclip", "~> 5.0.0"
 # Forms helper
 gem 'simple_form'
+# Geo Location
+gem 'geocoder'
 
 
 group :development, :test do

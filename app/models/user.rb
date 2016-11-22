@@ -13,7 +13,10 @@ class User < ApplicationRecord
   has_many :friends, through: :friendships
 
   validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
-  validates_presence_of :name
+  validates_presence_of :name, :city
+
+  geocoded_by :city
+  after_validation :geocode, if: ->(obj){ obj.city.present? and obj.city_changed? }
 
 
 end
