@@ -4,10 +4,8 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = []
-    current_user.friends.each do |f|
-      f.posts.each {|post| @posts << post}
-    end
+    friends = current_user.friends.pluck(:id)
+    @posts = Post.where(author: friends).paginate(:page => params[:page], :per_page => 10)
   end
 
   # GET /posts/1

@@ -42,6 +42,8 @@ gem 'simple_form'
 gem 'geocoder'
 #Fake data generator
 gem 'faker'
+#Pagination
+gem 'will_paginate', '~> 3.1.0'
 
 
 group :development, :test do
