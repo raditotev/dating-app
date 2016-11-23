@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :owner_only, only: [:edit, :update, :destroy]
 
   # GET /posts
   # GET /posts.json
@@ -71,5 +72,12 @@ class PostsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
       params.require(:post).permit(:title, :body, :author_id)
+    end
+
+    def owner_only
+      unless @post.author == current_user
+        flash[:notice] = "You're not authorized"
+        redirect_to root_url
+      end
     end
 end
