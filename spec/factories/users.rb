@@ -1,11 +1,11 @@
 FactoryGirl.define do
-  factory :user do
-    name "John Doe"
-    city "London"
-    avatar { File.new(Rails.public_path + "images/beast.png") }
-    email "john_doe@mail.com"
-    password "password"
-    password_confirmation "password"
+  factory :user do |u|
+    u.name "John Doe"
+    u.city "London"
+    u.avatar { File.new(Rails.public_path + "images/beast.png") }
+    u.sequence(:email) { |n| "john_doe#{n}@mail.com"}
+    u.password "password"
+    u.password_confirmation "password"
   end
 
 end

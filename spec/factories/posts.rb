@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :post do
-    title "MyString"
-body "MyText"
-author nil
+    title "Post Titile"
+    body "Post Text"
+    author { create(:user) }
   end
 
 end
