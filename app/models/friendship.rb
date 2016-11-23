@@ -1,5 +1,5 @@
 class Friendship < ApplicationRecord
-  validates_uniqueness_of :user_id, :friend_id
+  validates_uniqueness_of :friend_id , scope: :user_id
 
   validate :check_self_referential_friendship
 
@@ -8,8 +8,6 @@ class Friendship < ApplicationRecord
 
   after_create :ensure_reverse_friendship
   after_destroy :destroy_reverse_friendship
-
-
 
   private
 

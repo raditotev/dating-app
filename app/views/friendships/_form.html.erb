@@ -1,0 +1,15 @@
+
+<% if current_user.is_friend?(user) %>
+  <%= simple_form_for current_user.friendships.find_by(friend: user), method: :delete do |f| %>
+    <%= f.input :id, as: :hidden %>
+    <%= f.input :redirect_me, input_html: { value: redirect_me }, as: :hidden %>
+    <%= f.button :submit, "Unfollow" %>
+  <% end %>
+<% else %>
+  <%= simple_form_for current_user.friendships.new(friend: user) do |f| %>
+    <%= f.input :friend_id, as: :hidden %>
+    <%= f.button :submit, "Follow" %>
+  <% end %>
+<% end %>
+
+

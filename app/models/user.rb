@@ -18,5 +18,7 @@ class User < ApplicationRecord
   geocoded_by :city
   after_validation :geocode, if: ->(obj){ obj.city.present? and obj.city_changed? }
 
-
+  def is_friend?(friend)
+    self.friendships.find_by(friend: friend).present?
+  end
 end
