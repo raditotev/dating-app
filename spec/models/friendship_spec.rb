@@ -20,10 +20,19 @@ RSpec.describe Friendship, type: :model do
     expect(subject).to_not be_valid
   end
 
-  # it "is not valid if user is same as friend" do
-  #   subject.friend = user_one
-  #   expect(subject.save).to_not be_valid
-  # end
+  it "is not valid if user is same as friend" do
+    subject.friend = user_one
+    expect(subject).to_not be_valid
+  end
+
+  it "creates reverse friendship" do
+    expect { create(:friendship) }.to change(Friendship, :count).by(2)
+  end
+
+  it "destroys reverse friendship" do
+    friendship = create(:friendship)
+    expect { friendship.destroy }.to change(Friendship, :count).by(-2)
+  end
 
   describe "Associations" do
     it "belongs to user" do

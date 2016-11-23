@@ -1,5 +1,7 @@
 class Friendship < ApplicationRecord
-  validates_uniqueness_of :user_id, :scope => :friend_id
+  validates_uniqueness_of :user_id, :friend_id
+
+  validate :check_self_referential_friendship
 
   belongs_to :user
   belongs_to :friend, class_name: "User"
@@ -10,6 +12,12 @@ class Friendship < ApplicationRecord
 
 
   private
+
+  def check_self_referential_friendship
+    if user_id == friend_id
+      errors.add(:friend_id, "User and friend can't be the same object")
+    end
+  end
 
   def ensure_reverse_friendship
     unless Friendship.exists?(user: self.friend, friend: self.user)
