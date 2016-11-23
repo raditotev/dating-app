@@ -26,7 +26,7 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
-    @post = Post.new(post_params)
+    @post = current_user.posts.build(post_params)
 
     respond_to do |format|
       if @post.save
@@ -71,12 +71,12 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title, :body, :author_id)
+      params.require(:post).permit(:title, :body)
     end
 
     def owner_only
       unless @post.author == current_user
-        flash[:notice] = "You're not authorized"
+        flash[:error] = "You're not authorized"
         redirect_to root_url
       end
     end

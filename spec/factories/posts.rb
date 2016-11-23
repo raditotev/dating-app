@@ -5,4 +5,8 @@ FactoryGirl.define do
     author { create(:user) }
   end
 
+  factory :post_without_author, class: Post do
+    title "Post Titile"
+    body "Post Text"
+  end
 end

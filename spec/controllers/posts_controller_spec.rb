@@ -11,11 +11,11 @@ RSpec.describe PostsController, type: :controller do
   end
 
   let(:valid_attributes) {
-    attributes_for(:post, author_id: @current_user.id)
+    attributes_for(:post_without_author)
   }
 
   let(:invalid_attributes) {
-    attributes_for(:post, title: nil, body: nil)
+    attributes_for(:post_without_author, title: nil, body: nil)
   }
 
   let(:valid_session) { {} }
@@ -24,7 +24,7 @@ RSpec.describe PostsController, type: :controller do
     it "assigns all posts as @posts" do
       friend = create(:user)
       @current_user.friendships.create(friend: friend)
-      friend.posts.create(attributes_for(:post))
+      friend.posts.create(valid_attributes)
 
       get :index, params: {}, session: valid_session
       expect(assigns(:posts)).to eq(friend.posts)
@@ -49,7 +49,7 @@ RSpec.describe PostsController, type: :controller do
   describe "GET #edit" do
     context "when current user is owner of post" do
       it "assigns the requested post as @post" do
-        post = @current_user.posts.create(attributes_for(:post))
+        post = @current_user.posts.create(valid_attributes)
         get :edit, params: {id: post.to_param}, session: valid_session
         expect(assigns(:post)).to eq(post)
       end
@@ -105,20 +105,20 @@ RSpec.describe PostsController, type: :controller do
       }
 
       it "updates the requested post" do
-        post = Post.create! valid_attributes
+        post = @current_user.posts.create(valid_attributes)
         put :update, params: {id: post.to_param, post: new_attributes}, session: valid_session
         post.reload
         expect(assigns(:post).title).to eq(post.title)
       end
 
       it "assigns the requested post as @post" do
-        post = Post.create! valid_attributes
+        post = @current_user.posts.create(valid_attributes)
         put :update, params: {id: post.to_param, post: valid_attributes}, session: valid_session
         expect(assigns(:post)).to eq(post)
       end
 
       it "redirects to the post" do
-        post = Post.create! valid_attributes
+        post = @current_user.posts.create(valid_attributes)
         put :update, params: {id: post.to_param, post: valid_attributes}, session: valid_session
         expect(response).to redirect_to(post)
       end
@@ -126,13 +126,13 @@ RSpec.describe PostsController, type: :controller do
 
     context "with invalid params" do
       it "assigns the post as @post" do
-        post = Post.create! valid_attributes
+        post = @current_user.posts.create(valid_attributes)
         put :update, params: {id: post.to_param, post: invalid_attributes}, session: valid_session
         expect(assigns(:post)).to eq(post)
       end
 
       it "re-renders the 'edit' template" do
-        post = Post.create! valid_attributes
+        post = @current_user.posts.create(valid_attributes)
         put :update, params: {id: post.to_param, post: invalid_attributes}, session: valid_session
         expect(response).to render_template("edit")
       end
@@ -140,18 +140,37 @@ RSpec.describe PostsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested post" do
-      post = Post.create! valid_attributes
-      expect {
+    context "when post belongs to current user" do
+      it "destroys the requested post" do
+        post = @current_user.posts.create(valid_attributes)
+        expect {
+          delete :destroy, params: {id: post.to_param}, session: valid_session
+        }.to change(Post, :count).by(-1)
+      end
+
+      it "redirects to the posts list" do
+        post = @current_user.posts.create(valid_attributes)
         delete :destroy, params: {id: post.to_param}, session: valid_session
-      }.to change(Post, :count).by(-1)
+        expect(response).to redirect_to(posts_url)
+      end
     end
 
-    it "redirects to the posts list" do
-      post = Post.create! valid_attributes
-      delete :destroy, params: {id: post.to_param}, session: valid_session
-      expect(response).to redirect_to(posts_url)
+    context "when post doesn't belong to current user" do
+      it "destroys the requested post" do
+        post = create(:post)
+        expect {
+          delete :destroy, params: {id: post.to_param}, session: valid_session
+        }.to change(Post, :count).by(0)
+      end
+
+      it "redirects to the posts list" do
+        post = create(:post)
+        delete :destroy, params: {id: post.to_param}, session: valid_session
+        expect(response).to redirect_to(root_url)
+        expect(flash[:error]).to eq "You're not authorized"
+      end
     end
+
   end
 
 end
