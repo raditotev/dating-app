@@ -1,19 +1,27 @@
-<h2>Sign up 2</h2>
+<div class="devise">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+        <h2>Register</h2>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-  <div class="form-inputs">
-    <%= f.input :name %>
-    <%= f.input :city %>
-    <%= f.input :avatar, as: :file %>
-    <%= f.input :email, required: true, autofocus: true %>
-    <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
-    <%= f.input :password_confirmation, required: true %>
+        <div class="form-inputs">
+          <%= f.input :name %>
+          <%= f.input :city %>
+          <%= f.input :avatar, as: :file %>
+          <%= f.input :email, required: true, autofocus: true %>
+          <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
+          <%= f.input :password_confirmation, required: true %>
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, "Sign up" %>
+        </div>
+        <% end %>
+
+        <%= render "users/shared/links" %>
+      </div>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "users/shared/links" %>
+</div>

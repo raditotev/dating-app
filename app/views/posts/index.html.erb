@@ -1,30 +1,18 @@
-<h1>Posts</h1>
+<div id="posts">
+  <div class="container">
+    <%= avatar(current_user) %> Hi, <%= current_user.name %>. Create <%= link_to 'New Post', new_post_path %>
+  </div>
+</div>
+<h2 class="text-center">Your Posts Feed</h2>
+<div class="container">
+  <% @posts.each do |post| %>
+  <div class="row">
+    <h4><%= image_tag(post.author.avatar.url(:thumb), class: "img-circle feed-avatar") %> <%= post.author.name %></h4>
+    <p><%= post.body %></p>
+  </div>
+  <% end %>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Body</th>
-      <th>Author</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @posts.each do |post| %>
-      <tr>
-        <td><%= post.title %></td>
-        <td><%= post.body %></td>
-        <td><%= post.author.name %></td>
-        <td><%= link_to 'Show', post %></td>
-        <td><%= link_to 'Edit', edit_post_path(post) %></td>
-        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-<%= will_paginate @posts %>
-
-<%= link_to 'New Post', new_post_path %>
+<div class="text-center">
+    <%= will_paginate %>
+</div>

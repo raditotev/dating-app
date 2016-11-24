@@ -1,33 +1,36 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+<div class="row">
+    <div class="col-xs-3 col-xs-offset-2">
+      <h3>Name</h3>
+    </div>
+    <div class="col-xs-3">
+      <h3>City</h3>
+    </div>
+    <div class="col-xs-2">
+      <h3>Posts</h3>
+    </div>
+  </div>
+  <% @users.each do |user| %>
+  <div class="row">
+    <div class="col-xs-2">
+      <%= avatar(user) %>
+    </div>
+    <div class="col-xs-3">
+      <%= user.name %>
+    </div>
+    <div class="col-xs-3">
+      <%= user.city %>
+    </div>
+    <div class="col-xs-2">
+      <%= user.posts.count %>
+    </div>
+    <div class="col-xs-2">
+      <%= render partial: 'friendships/form', locals: { user: user, redirect_me: users_path }  %>
+    </div>
+  </div>
+  <% end %>
+</div>
 
-<h1>Users</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Avatar</th>
-      <th>Name</th>
-      <th>City</th>
-      <th>Posts</th>
-      <th colspan="1"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= avatar(user) %></td>
-        <td><%= user.name %></td>
-        <td><%= user.city %></td>
-        <td><%= user.posts.count %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td>
-          <%= render partial: 'friendships/form', locals: { user: user, redirect_me: users_path }  %>
-          </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-<%= will_paginate @users %>
+<div class="text-center">
+    <%= will_paginate %>
+</div>
