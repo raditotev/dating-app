@@ -53,33 +53,18 @@ RSpec.describe FriendshipsController, type: :controller do
   #   end
   # end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested friendship" do
-        friendship = create(:friendship)
-        expect {
-          delete :destroy, params: {friend_id: friendship.to_param}, session: valid_session
-        }.to change(Friendship, :count).by(-1)
-      end
+  # describe "DELETE #destroy" do
+  #   it "destroys the requested friendship" do
+  #       friendship = create(:friendship)
+  #       expect {
+  #         delete :destroy, params: {friend_id: friendship.to_param}, session: valid_session
+  #       }.to change(Friendship, :count).by(-1)
+  #     end
 
-      it "redirects to the posts list" do
-        post = @current_user.posts.create(valid_attributes)
-        delete :destroy, params: {id: post.to_param}, session: valid_session
-        expect(response).to redirect_to(posts_url)
-      end
-  end
-
-  # describe "POST #create" do
-  #   it "returns http success" do
-  #     post :create
-  #     expect(response).to have_http_status(:success)
-  #   end
+  #     it "redirects to the posts list" do
+  #       post = @current_user.posts.create(valid_attributes)
+  #       delete :destroy, params: {id: post.to_param}, session: valid_session
+  #       expect(response).to redirect_to(posts_url)
+  #     end
   # end
-
-  # describe "GET #destroy" do
-  #   it "returns http success" do
-  #     get :destroy
-  #     expect(response).to have_http_status(:success)
-  #   end
-  # end
-
 end
