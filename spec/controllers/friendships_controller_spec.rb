@@ -5,66 +5,75 @@ RSpec.describe FriendshipsController, type: :controller do
   before(:each) do
     @request.env["devise.mapping"] = Devise.mappings[:user]
     @current_user = create(:user)
-    @another_user = create(:user)
     sign_in @current_user
   end
 
-  let(:valid_attributes) {
-    { friend_id: @another_user.id }
-  }
-
-  # let(:invalid_attributes) {
-  #   { friend_id: nil }
+  # let(:valid_attributes) {
+  #     friend_id: create(:user)
   # }
+
+  let(:invalid_attributes) {
+    { friend_id: nil }
+  }
 
   let(:valid_session) { {} }
 
-  # describe "Friendship #create" do
-  #   context "with valid params" do
-  #     it "creates a new Friendship" do
-  #       @friendship = @current_user.friendships.new
-  #       expect{
-  #         post :create, params: {friendship: valid_attributes}, session: valid_session
-  #       }.to change(Friendship, :count).by(1)
-  #     end
+  describe "Friendship #create" do
+    context "with valid params" do
+      it "creates a new Friendship" do
+        another_user = create(:user)
+        expect{
+          post :create, params: {friendship: {friend_id: another_user.id}}, session: valid_session
+        }.to change(@current_user.friendships, :count).by(1)
+      end
 
-  #     it "assigns a newly created post as @post" do
-  #       post :create, params: {post: valid_attributes}, session: valid_session
-  #       expect(assigns(:post)).to be_a(Post)
-  #       expect(assigns(:post)).to be_persisted
-  #     end
+      it "assigns a newly created post as @post" do
+        another_user = create(:user)
+        post :create, params: {friendship: {friend_id: another_user.id}}, session: valid_session
+        expect(assigns(:friendship)).to be_a(Friendship)
+        expect(assigns(:friendship)).to be_persisted
+      end
 
-  #     it "redirects to the created post" do
-  #       post :create, params: {post: valid_attributes}, session: valid_session
-  #       expect(response).to redirect_to(Post.last)
-  #     end
-  #   end
+      it "redirects to root_url when params[:redirect_me] not set" do
+        another_user = create(:user)
+        post :create, params: {friendship: {friend_id: another_user.id}}, session: valid_session
+        expect(response).to redirect_to(root_url)
+      end
 
-  #   context "with invalid params" do
-  #     it "assigns a newly created but unsaved post as @post" do
-  #       post :create, params: {post: invalid_attributes}, session: valid_session
-  #       expect(assigns(:post)).to be_a_new(Post)
-  #     end
+    it "redirects to given when params[:redirect_me] set" do
+        another_user = create(:user)
+        post :create, params: {friendship: {friend_id: another_user.id}, redirect_me: users_path}, session: valid_session
+        expect(response).to redirect_to(users_path)
+      end
+    end
 
-  #     it "re-renders the 'new' template" do
-  #       post :create, params: {post: invalid_attributes}, session: valid_session
-  #       expect(response).to render_template("new")
-  #     end
-  #   end
-  # end
+    context "with invalid params" do
+      it "raises an error" do
+        expect{
+          post :create, params: { friendship: invalid_attributes }, session: valid_session
+          }.to raise_error(RuntimeError)
+      end
+    end
+  end
 
-  # describe "DELETE #destroy" do
-  #   it "destroys the requested friendship" do
-  #       friendship = create(:friendship)
-  #       expect {
-  #         delete :destroy, params: {friend_id: friendship.to_param}, session: valid_session
-  #       }.to change(Friendship, :count).by(-1)
-  #     end
+  describe "DELETE #destroy" do
+    it "destroys the requested friendship" do
+        friendship = create(:friendship)
+        expect {
+          delete :destroy, params: {id: friendship.to_param}, session: valid_session
+        }.to change(Friendship, :count).by(-2) # destroys reverse friendship
+      end
 
-  #     it "redirects to the posts list" do
-  #       post = @current_user.posts.create(valid_attributes)
-  #       delete :destroy, params: {id: post.to_param}, session: valid_session
-  #       expect(response).to redirect_to(posts_url)
-  #     end
-  # end
+      it "redirects to the root_url when params[:redirect_me] not provided" do
+        friendship = create(:friendship)
+        delete :destroy, params: {id: friendship.to_param}, session: valid_session
+        expect(response).to redirect_to(root_url)
+      end
+
+       it "redirects to the given path when params[:redirect_me] set" do
+        friendship = create(:friendship)
+        delete :destroy, params: {id: friendship.to_param, redirect_me: users_path}, session: valid_session
+        expect(response).to redirect_to(users_path)
+      end
+  end
 end
